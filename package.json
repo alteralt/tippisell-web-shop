@@ -1,0 +1,24 @@
+{
+  "name": "tippisell_web_shop",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@vueuse/core": "^10.5.0",
+    "axios": "^1.6.0",
+    "currency-symbols": "^0.4.1",
+    "floating-vue": "^2.0.0-beta.24",
+    "vue": "^3.3.4",
+    "vue-plugin-load-script": "^2.1.1",
+    "vue-router": "^4.2.5"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^4.4.0",
+    "prettier": "3.1.0",
+    "vite": "^4.4.11"
+  }
+}
