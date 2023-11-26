@@ -35,7 +35,7 @@
                             </tr>
 
                             <tr v-for="product in products">
-                                <td v-tooltip="product.description">
+                                <td v-tooltip="{ content: product.description, html: true }">
                                     <div class="title">
                                         {{ product.name }}
                                     </div>
@@ -80,7 +80,7 @@
                                         category.id
                                     ]"
                                 >
-                                    <td v-tooltip="product.description">
+                                    <td v-tooltip="{ content: product.description, html: true }">
                                         <div class="title">
                                             {{ product.name }}
                                         </div>
