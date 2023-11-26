@@ -35,7 +35,10 @@
                             </tr>
 
                             <tr v-for="product in products">
-                                <Product v-bind:product="product" v-bind:currencySymbol="currencySymbol"/>
+                                <Product
+                                    v-bind:product="product"
+                                    v-bind:currencySymbol="currencySymbol"
+                                />
                             </tr>
                             <template v-for="category in categories">
                                 <tr class="separator">
@@ -48,7 +51,10 @@
                                         category.id
                                     ]"
                                 >
-                                    <Product v-bind:product="product" v-bind:currencySymbol="currencySymbol"/>
+                                    <Product
+                                        v-bind:product="product"
+                                        v-bind:currencySymbol="currencySymbol"
+                                    />
                                 </tr>
                             </template>
                         </table>
@@ -324,7 +330,7 @@ export default {
         this.categoriesProducts = categoriesProducts
         this.categories = categories
     },
-    components: { NavBar, Footer, Product},
+    components: { NavBar, Footer, Product },
     props: ["shop", "tippisellClient"],
     methods: {
         async goToPay(event) {

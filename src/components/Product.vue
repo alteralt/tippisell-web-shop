@@ -5,33 +5,18 @@
         </div>
     </td>
     <td>
-        <span
-            v-if="
-                product.is_infinitely == false
-            "
-            >{{ product.count_positions }}</span
-        >
-        <img
-            v-else
-            src="/static/images/icons/infinity-svgrepo-com.svg"
-        />
+        <span v-if="product.is_infinitely == false">{{
+            product.count_positions
+        }}</span>
+        <img v-else src="/static/images/icons/infinity-svgrepo-com.svg" />
     </td>
     <td>
-        <span class="price_tbl">{{
-            product.price
-        }}</span
-        >&nbsp;<span class="rouble">{{
-            currencySymbol
-        }}</span>
+        <span class="price_tbl">{{ product.price }}</span
+        >&nbsp;<span class="rouble">{{ currencySymbol }}</span>
     </td>
     <td class="text-center">
-        <a
-            class="buy hov-pointer"
-            v-on:click="buy(product)"
-        >
-            <i class="fa fa-shopping-cart">
-                Купить</i
-            >
+        <a class="buy hov-pointer" v-on:click="buy(product)">
+            <i class="fa fa-shopping-cart"> Купить</i>
         </a>
     </td>
 </template>
