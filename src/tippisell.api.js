@@ -1,6 +1,6 @@
 import axios from "axios"
 
-export class Client {
+class Client {
     endpoint = "https://tippisell.xyz"
 
     constructor(shopId = null) {
@@ -12,116 +12,129 @@ export class Client {
     }
 
     async parseAllData(path, params = null) {
-        var records = []
+        const url = this.makeUrl(path)
+        const response = await axios.get(url, { params: params })
 
-        var offset = 0
-        while (true) {
-            let url = this.makeUrl(path)
-            let response = await axios.get(url, { params: params })
+        const records = response.data.result.data
 
-            let result = response.data["result"]
+        const totalCount = response.data.result.total_count
+        let offset = records.length
 
-            for (let i = 0; i < result["data"].length; i++) {
-                let element = result["data"][i]
-                records.push(element)
-            }
+        const requiredCountRequest = Math.ceil(
+            (totalCount - offset) / params.limit,
+        )
+        const promises = []
 
-            if (result["total_count"] == records.length) break
+        for (let i = 0; i < requiredCountRequest; i += 1) {
+            /* eslint no-param-reassign: "error" */
+            params.offset = offset
+            promises.push(axios.get(url, { params: params }))
 
-            offset += result["data"].length
+            offset += params.limit
+        }
+
+        const responses = await Promise.all(promises)
+
+        for (let i = 0; i < responses.length; i += 1) {
+            const element = responses[i]
+            records.push(...element.data.result.data)
         }
 
         return records
     }
 
     async getAllProducts() {
-        return await this.parseAllData("/api/v2/product/all", {
+        const response = await this.parseAllData("/api/v2/product/all", {
             shop_id: this.shopId,
             with_count_positions: true,
+            limit: 100,
         })
+        return response
     }
 
     async getAllCategories() {
-        return await this.parseAllData("/api/v2/category/all", {
+        const response = await this.parseAllData("/api/v2/category/all", {
             shop_id: this.shopId,
+            limit: 100,
         })
+        return response
     }
 
     async getShopBySubdomain(subdomain) {
-        let url = this.makeUrl("/api/v2/shop/get-by-subdomain/" + subdomain)
-        var response = await axios.get(url)
-        return response.data["result"]
+        const url = this.makeUrl(`/api/v2/shop/get-by-subdomain/${subdomain}`)
+        const response = await axios.get(url)
+        return response.data.result
     }
 
     async getOrNoneCoupon(code) {
-        let url = this.makeUrl("/api/coupon")
+        const url = this.makeUrl("/api/coupon")
 
-        var params = { params: { coupon_code: code, shop_id: this.shopId } }
-        var response = await axios.get(url, params)
+        const params = { params: { coupon_code: code, shop_id: this.shopId } }
+        const response = await axios.get(url, params)
         return response.data
     }
 
     async getOrCreateUserByEmail(email) {
-        var url = this.makeUrl("/api/v2/user/get-or-create-by-email/" + email)
-        var response = await axios.post(url, { shop_id: this.shopId })
-        return response.data["result"]
+        const url = this.makeUrl(`/api/v2/user/get-or-create-by-email/${email}`)
+        const response = await axios.post(url, { shop_id: this.shopId })
+        return response.data.result
     }
 
     async createCryptoBotInvoice(userId, amount, coin) {
-        let url = this.makeUrl(
-            "/api/v2/shop/" + this.shopId + "/create-crypto-bot-invoice",
+        const url = this.makeUrl(
+            `/api/v2/shop/${this.shopId}/create-crypto-bot-invoice`,
         )
-        var response = await axios.post(url, {
+        const response = await axios.post(url, {
             user_id: userId,
             amount: amount,
             coin: coin,
         })
-        return response.data["result"]
+        return response.data.result
     }
 
     async createAAIOInvoice(userId, amount) {
-        let url = this.makeUrl(
-            "/api/v2/shop/" + this.shopId + "/create-aaio-invoice",
+        const url = this.makeUrl(
+            `/api/v2/shop/${this.shopId}/create-aaio-invoice`,
         )
-        var response = await axios.post(url, {
+        const response = await axios.post(url, {
             user_id: userId,
             amount: amount,
         })
-        return response.data["result"]
+        return response.data.result
     }
 
     async checkAAIOInvoice(userId, invoiceId) {
-        let url = this.makeUrl(
-            "/api/v2/shop/" + this.shopId + "/check-aaio-invoice",
+        const url = this.makeUrl(
+            `/api/v2/shop/${this.shopId}/check-aaio-invoice`,
         )
-        var params = { params: { user_id: userId, invoice_id: invoiceId } }
-        var response = await axios.get(url, params)
-        return response.data["result"]
+        const params = { params: { user_id: userId, invoice_id: invoiceId } }
+        const response = await axios.get(url, params)
+        return response.data.result
     }
 
     async createCrystalPayInvoice(userId, amount) {
-        let url = this.makeUrl(
-            "/api/v2/shop/" + this.shopId + "/create-crystal-pay-invoice",
+        const url = this.makeUrl(
+            `/api/v2/shop/${this.shopId}/create-crystal-pay-invoice`,
         )
-        var response = await axios.post(url, {
+        const response = await axios.post(url, {
             user_id: userId,
             amount: amount,
         })
-        return response.data["result"]
+        return response.data.result
     }
 
     async purchaseProcess(userId, productId, count) {
-        let url = this.makeUrl(
-            "/api/v2/shop/" + this.shopId + "/purchase-process",
-        )
+        const url = this.makeUrl(`/api/v2/shop/${this.shopId}/purchase-process`)
 
-        var payload = {
+        const payload = {
             shop_id: this.shopId,
             user_id: userId,
             product_id: productId,
             count: count,
         }
-        var response = await axios.post(url, payload)
-        return response.data["result"]
+        const response = await axios.post(url, payload)
+        return response.data.result
     }
 }
+
+export { Client }
