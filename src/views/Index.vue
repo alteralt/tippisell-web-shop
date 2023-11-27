@@ -38,6 +38,7 @@
                                 <Product
                                     v-bind:product="product"
                                     v-bind:currencySymbol="currencySymbol"
+                                    v-bind:buy="buy"
                                 />
                             </tr>
                             <template v-for="category in categories">
@@ -54,6 +55,7 @@
                                     <Product
                                         v-bind:product="product"
                                         v-bind:currencySymbol="currencySymbol"
+                                        v-bind:buy="buy"
                                     />
                                 </tr>
                             </template>
