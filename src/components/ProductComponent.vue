@@ -23,6 +23,6 @@
 
 <script>
 export default {
-    props: ["product", "currencySymbol"],
+    props: ["product", "currencySymbol", "buy"],
 }
 </script>
