@@ -33,3 +33,9 @@ npm run build
 ```sh
 npx prettier . --write
 ```
+
+### Eslint run
+
+```sh
+npx eslint src
+```
