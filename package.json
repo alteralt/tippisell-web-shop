@@ -8,6 +8,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@sentry/vue": "^7.81.1",
     "@vueuse/core": "^10.5.0",
     "axios": "^1.6.0",
     "currency-symbols": "^0.4.1",
