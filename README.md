@@ -37,5 +37,5 @@ npx prettier . --write
 ### Eslint run
 
 ```sh
-npx eslint src
+npx eslint src --ext .js,.vue
 ```

@@ -34,14 +34,17 @@
                                 <th></th>
                             </tr>
 
-                            <tr v-for="product in products">
+                            <tr v-for="product in products" :key="product.id">
                                 <Product
                                     v-bind:product="product"
                                     v-bind:currencySymbol="currencySymbol"
                                     v-bind:buy="buy"
                                 />
                             </tr>
-                            <template v-for="category in categories">
+                            <template
+                                v-for="category in categories"
+                                :key="category.id"
+                            >
                                 <tr class="separator">
                                     <td colspan="4" class="text-center">
                                         {{ category.name }}
@@ -51,6 +54,7 @@
                                     v-for="product in this.categoriesProducts[
                                         category.id
                                     ]"
+                                    :key="product.id"
                                 >
                                     <Product
                                         v-bind:product="product"
@@ -75,8 +79,15 @@
                                 id="paymodal"
                                 style="display: none"
                             >
+                                <!-- prettier-ignore -->
                                 <table
-                                    class="additionaltable paytable table table-striped table-bordered table-hover"
+                                    class="
+                                    additionaltable
+                                    table
+                                    table-striped
+                                    table-bordered
+                                    table-hover
+                                    "
                                     style="font-size: 16px; position: relative"
                                 >
                                     <tbody>
@@ -174,6 +185,7 @@
                                             <select v-model="payMethod">
                                                 <option
                                                     v-for="paymentSystem in shop.payment_methods"
+                                                    :key="paymentSystem.id"
                                                     :value="paymentSystem"
                                                     :m_name="paymentSystem"
                                                 >
@@ -257,7 +269,7 @@
             </div>
         </div>
 
-        <footer v-bind:shop="shop" />
+        <FooterComponent v-bind:shop="shop" />
     </main>
 </template>
 
@@ -267,9 +279,9 @@ import "floating-vue/dist/style.css"
 import getCurrencySymbol from "currency-symbols"
 import { loadScript } from "vue-plugin-load-script"
 
-import Footer from "../components/Footer.vue"
+import FooterComponent from "../components/FooterComponent.vue"
 import NavBar from "../components/NavBarMain.vue"
-import Product from "../components/Product.vue"
+import Product from "../components/ProductComponent.vue"
 
 loadScript(
     "https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js",
@@ -283,46 +295,52 @@ loadScript(
 
 export default {
     async created() {
-        var values = await Promise.all([
+        const values = await Promise.all([
             this.tippisellClient.getAllProducts(),
             await this.tippisellClient.getAllCategories(),
         ])
-        var products_ = values[0]
-        var categories_ = values[1]
+        // eslint-disable-next-line no-underscore-dangle
+        const products_ = values[0]
+        // eslint-disable-next-line no-underscore-dangle
+        const categories_ = values[1]
 
-        var products = []
-        var categoriesProducts = {}
+        const products = []
+        const categoriesProducts = {}
 
-        for (var i = 0; i < products_.length; i++) {
-            var product = products_[i]
+        for (let i = 0; i < products_.length; i += 1) {
+            const product = products_[i]
 
             if (
-                this.shop["hide_empty_products"] &&
-                product["count_positions"] == 0
+                this.shop.hide_empty_products &&
+                product.count_positions === 0
             ) {
                 // Если пустые продукты скрыты и товаров у текущего продукта нет
+                // eslint-disable-next-line no-continue
                 continue
             }
 
-            if (product["category_id"] != null) {
-                var products__ =
-                    categoriesProducts[product["category_id"]] || []
+            if (product.category_id != null) {
+                // eslint-disable-next-line no-underscore-dangle
+                const products__ = categoriesProducts[product.category_id] || []
                 products__.push(product)
-                categoriesProducts[product["category_id"]] = products__
+                categoriesProducts[product.category_id] = products__
+                // eslint-disable-next-line no-continue
                 continue
             }
 
             products.push(product)
         }
 
-        var categories = []
+        const categories = []
 
-        for (let i = 0; i < categories_.length; i++) {
-            var category = categories_[i]
+        for (let i = 0; i < categories_.length; i += 1) {
+            const category = categories_[i]
             if (
-                this.shop["hide_empty_products"] &&
-                categoriesProducts[category["id"]] == undefined
+                this.shop.hide_empty_products &&
+                categoriesProducts[category.id] === undefined
             ) {
+                // Если скрыты пустые товары и в категории нет
+                // eslint-disable-next-line no-continue
                 continue
             }
             categories.push(category)
@@ -332,26 +350,31 @@ export default {
         this.categoriesProducts = categoriesProducts
         this.categories = categories
     },
-    components: { NavBar, Footer, Product },
+    components: { NavBar, FooterComponent, Product },
     props: ["shop", "tippisellClient"],
     methods: {
         async goToPay(event) {
             event.preventDefault()
 
-            var minCount = isiShop.variables.good_mincount
-            var count_accs = isiShop.variables.good_count
+            // eslint-disable-next-line no-undef
+            const minCount = isiShop.variables.good_mincount
+            // eslint-disable-next-line no-undef
+            const countAccs = isiShop.variables.good_count
 
             if (!this.validateEmail(this.email)) {
+                // eslint-disable-next-line no-alert
                 alert("Укажите Email адрес")
                 return false
             }
 
-            if (parseInt(this.countGoods) < parseInt(minCount)) {
-                alert("Мин. кол-во товара " + minCount)
+            if (parseInt(this.countGoods, 10) < parseInt(minCount, 10)) {
+                // eslint-disable-next-line no-alert
+                alert(`Мин. кол-во товара ${minCount}`)
                 return false
             }
 
-            if (parseInt(count_accs) < parseInt(this.countGoods)) {
+            if (parseInt(countAccs, 10) < parseInt(this.countGoods, 10)) {
+                // eslint-disable-next-line no-alert
                 alert("Такого количества товара нет")
                 return false
             }
@@ -361,110 +384,110 @@ export default {
                 this.email,
             )
 
-            if (this.payMethod == "aaio") {
-                var response = await this.tippisellClient.createAAIOInvoice(
-                    this.user["id"],
+            let response
+            if (this.payMethod === "aaio") {
+                response = await this.tippisellClient.createAAIOInvoice(
+                    this.user.id,
                     this.sumAmount,
                 )
             } else if (this.payMethod.startsWith("crypto_bot")) {
-                var coin = this.payMethod.split("_")[2].toUpperCase()
-                var response =
-                    await this.tippisellClient.createCryptoBotInvoice(
-                        this.user["id"],
-                        this.sumAmount,
-                        coin,
-                    )
-            } else if (this.payMethod == "crystal_pay") {
-                var response =
-                    await this.tippisellClient.createCrystalPayInvoice(
-                        this.user["id"],
-                        this.sumAmount,
-                    )
+                const coin = this.payMethod.split("_")[2].toUpperCase()
+                response = await this.tippisellClient.createCryptoBotInvoice(
+                    this.user.id,
+                    this.sumAmount,
+                    coin,
+                )
+            } else if (this.payMethod === "crystal_pay") {
+                response = await this.tippisellClient.createCrystalPayInvoice(
+                    this.user.id,
+                    this.sumAmount,
+                )
             }
-            this.payUrl = response["url"]
-            this.invoiceId = response["invoice_id"]
+            this.payUrl = response.url
+            this.invoiceId = response.invoice_id
 
             $("#selectPay").hide()
             $("#paymodal").show()
+
+            return null
         },
-        async checkPay(event) {
+        async checkPay() {
             $(".checkpaybtn").button("loading")
 
-            var is_paid = true
-            if (this.payMethod == "aaio") {
-                var is_paid = await this.tippisellClient.checkAAIOInvoice(
-                    this.user["id"],
+            let isPaid = true
+            if (this.payMethod === "aaio") {
+                isPaid = await this.tippisellClient.checkAAIOInvoice(
+                    this.user.id,
                     this.invoiceId,
                 )
             }
 
-            if (is_paid == false) {
+            if (isPaid === false) {
                 $(".checkpaybtn").button("reset")
+                // eslint-disable-next-line no-alert
                 alert("Платеж не найден! Попробуйте позже")
                 return
             }
 
-            var user = await this.tippisellClient.getOrCreateUserByEmail(
+            const user = await this.tippisellClient.getOrCreateUserByEmail(
                 this.email,
             )
 
-            if (user["balance"] < this.sumAmount) {
+            if (user.balance < this.sumAmount) {
                 $(".checkpaybtn").button("reset")
+                // eslint-disable-next-line no-alert
                 alert("Платеж не найден! Попробуйте позже")
                 return
             }
 
-            if (this.currentProduct["is_infinitely"] == false) {
-                var count = this.countGoods
+            let count
+            if (this.currentProduct.is_infinitely === false) {
+                count = this.countGoods
             } else {
-                var count = null
+                count = null
             }
+
             this.purchase = await this.tippisellClient.purchaseProcess(
-                user["id"],
-                this.currentProduct["id"],
+                user.id,
+                this.currentProduct.id,
                 count,
             )
             $(".checkpaybtn").button("reset")
         },
-        async checkCoupon(event) {
-            var coupon = await this.tippisellClient.getOrNoneCoupon(
+        async checkCoupon() {
+            const coupon = await this.tippisellClient.getOrNoneCoupon(
                 this.couponCode,
             )
-            var discount_percent = parseInt(coupon["percent"])
 
-            this.discountPercent = discount_percent
+            this.discountPercent = parseInt(coupon.percent, 10)
 
-            if (this.currentProduct["is_infinitely"] == false) {
-                var count = this.countGoods
+            let count
+            if (this.currentProduct.is_infinitely === false) {
+                count = this.countGoods
             } else {
-                var count = 1
+                count = 1
             }
 
-            this.sumAmount = this.generateSum(
-                count,
-                this.currentProduct["price"],
-            )
+            this.sumAmount = this.generateSum(count, this.currentProduct.price)
         },
         buy(product) {
             this.currentProduct = product
-            var $popup = $(".choose_popup")
+            const $popup = $(".choose_popup")
 
             $(".order_popup").remove()
             $("#order").show()
             $("body").addClass("popup-open")
 
-            this.countGoods = product["min_buy"]
+            this.countGoods = product.min_buy
             this.discountPercent = 0
 
             $popup.find("#discount_code").val("")
 
-            this.sumAmount = this.generateSum(
-                product["min_buy"],
-                product["price"],
-            )
+            this.sumAmount = this.generateSum(product.min_buy, product.price)
 
             $("#overlay, .choose_popup").fadeIn("slow")
 
+            // eslint-disable-next-line no-undef
             if (isiShop.variables.storage.getItem("lastorder") != null) {
                 $("#btn-window").show()
             }
@@ -472,29 +495,29 @@ export default {
             return false
         },
         generateSum(count, price) {
-            if (count > this.currentProduct["count_positions"]) {
+            if (count > this.currentProduct.count_positions) {
                 $(".choose_popup #currency").hide()
                 return "Такого кол-ва товара нет"
-            } else {
-                var sum = price * count
-                var sum = this.generateSumDiscount(sum)
-
-                return Math.ceil(sum * 100) / 100
             }
+            const sum = this.generateSumDiscount(price * count)
+
+            return Math.ceil(sum * 100) / 100
         },
         generateSumDiscount(sum) {
             if (this.discountPercent > 0) {
-                sum = sum - (sum / 100) * this.discountPercent
+                return sum - (sum / 100) * this.discountPercent
             }
 
             return sum
         },
         validateEmail(email) {
-            var re =
-                /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+            // prettier-ignore
+            // eslint-disable-next-line no-useless-escape
+            const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
             return re.test(email)
         },
     },
+    // eslint-disable-next-line func-names
     data: function () {
         return {
             // v-models
@@ -507,10 +530,11 @@ export default {
             payUrl: null, // Ссылка, по которой пользователь должен оплатить
             invoiceId: null, // ID инвойса
 
-            discountPercent: 0, // Если пользователь применил промокод, то здесь будет значение процента скидки
+            // Если пользователь применил промокод, то здесь будет значение процента скидки
+            discountPercent: 0,
             currentProduct: null, // Выбраный продукт для покупки
             sumAmount: null, // Сумма покупки, с учётом скидки
-            currencySymbol: getCurrencySymbol(this.shop["currency"]),
+            currencySymbol: getCurrencySymbol(this.shop.currency),
             user: null,
             purchase: null,
             products: [],
@@ -518,10 +542,10 @@ export default {
         }
     },
     watch: {
-        countGoods(newValue, oldValue) {
+        countGoods(newValue) {
             this.sumAmount = this.generateSum(
                 newValue,
-                this.currentProduct["price"],
+                this.currentProduct.price,
             )
         },
     },
