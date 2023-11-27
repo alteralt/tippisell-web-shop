@@ -9,17 +9,17 @@
         </div>
     </div>
 
-    <Footer v-bind:shop="shop" />
+    <FooterComponent v-bind:shop="shop" />
 </template>
 
 <script>
-import Footer from "../components/Footer.vue"
+import FooterComponent from "../components/FooterComponent.vue"
 import NavBar from "../components/NavBarMain.vue"
 
 export default {
     components: {
         NavBar,
-        Footer,
+        FooterComponent,
     },
     props: ["shop"],
 }
