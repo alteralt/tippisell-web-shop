@@ -20,5 +20,15 @@ module.exports = {
         sourceType: "module",
     },
     plugins: ["vue"],
-    rules: {},
+    rules: {
+        semi: [2, "never"],
+        indent: ["error", 4],
+        quotes: [2, "double", { avoidEscape: true }],
+        "import/no-extraneous-dependencies": [
+            "error",
+            { devDependencies: true },
+        ],
+        "object-shorthand": 0,
+        "import/prefer-default-export": ["off", "any"],
+    },
 }
