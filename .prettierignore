@@ -1,5 +1,4 @@
 .vscode
 package-lock.json
-vite.config.js
 package.json
 dist
