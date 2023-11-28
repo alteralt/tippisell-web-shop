@@ -70,7 +70,7 @@
                         <div class="popup-modal" style="max-width: 500px">
                             <div class="title">
                                 Оплата
-                                <i class="fa fa-times pull-right"></i>
+                                <i class="fa fa-times pull-right" v-on:click="closeBuyPopup"></i>
                             </div>
 
                             <div
@@ -292,8 +292,6 @@ loadScript(
     loadScript(
         "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js",
     )
-
-    loadScript("static/js/shop.new.js")
 })
 
 export default {
@@ -359,17 +357,12 @@ export default {
         async goToPay(event) {
             event.preventDefault()
 
-            // eslint-disable-next-line no-undef
-            const minCount = isiShop.variables.good_mincount
-            // eslint-disable-next-line no-undef
-            const countAccs = isiShop.variables.good_count
-
-            if (parseInt(this.countGoods, 10) < parseInt(minCount, 10)) {
+            if (parseInt(this.countGoods, 10) < parseInt(this.currentProduct.min_buy, 10)) {
                 // eslint-disable-next-line no-alert
-                alert(`Мин. кол-во товара ${minCount}`)
+                alert(`Мин. кол-во товара ${this.currentProduct.min_buyinCount}`)
             }
 
-            if (parseInt(countAccs, 10) < parseInt(this.countGoods, 10)) {
+            if (parseInt(this.currentProduct.count_positions, 10) < parseInt(this.countGoods, 10)) {
                 // eslint-disable-next-line no-alert
                 alert("Такого количества товара нет")
                 return false
@@ -405,7 +398,7 @@ export default {
             $("#selectPay").hide()
             $("#paymodal").show()
 
-            return null
+            return
         },
         async checkPay() {
             $(".checkpaybtn").button("loading")
@@ -483,11 +476,6 @@ export default {
 
             $("#overlay, .choose_popup").fadeIn("slow")
 
-            // eslint-disable-next-line no-undef
-            if (isiShop.variables.storage.getItem("lastorder") != null) {
-                $("#btn-window").show()
-            }
-
             return false
         },
         generateSum(count, price) {
@@ -512,6 +500,22 @@ export default {
             const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
             return re.test(email)
         },
+        closeBuyPopup() {
+            if (this.payUrl !== null) {
+                const closeConfirm = confirm("Вы уверены, что хотите прервать процесс покупки?")
+                if (closeConfirm === false) {
+                    // Если пользователь уверен, что хочет прервать покупку
+                    return
+                }
+            }
+            $("#overlay, .choose_popup, .success_popup").fadeOut("slow")
+            $("body").removeClass("popup-open")
+
+            this.currentProduct = null
+            this.payUrl = null
+            this.invoiceId = null
+            this.discountPercent = null
+        }
     },
     // eslint-disable-next-line func-names
     data: function () {
