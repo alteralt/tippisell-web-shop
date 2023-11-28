@@ -236,7 +236,7 @@
                                         type="checkbox"
                                         name="offer"
                                         required
-                                        onchange="$('.btn-leque').attr('disabled', !this.checked);"
+                                        v-model="rules"
                                     />
                                 </div>
                                 <br />
@@ -245,7 +245,7 @@
                                         type="submit"
                                         class="btn btn-success btn-leque"
                                         v-on:click="goToPay"
-                                        disabled
+                                        :disabled="rules == false"
                                     >
                                         Перейти к оплате
                                     </button>
@@ -502,6 +502,7 @@ export default {
             countGoods: 0,
             email: null,
             couponCode: null,
+            rules: false, // Принял ли пользователь правила
             //
 
             payUrl: null, // Ссылка, по которой пользователь должен оплатить
