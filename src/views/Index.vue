@@ -364,6 +364,7 @@ export default {
             if (parseInt(this.countGoods, 10) < parseInt(minCount, 10)) {
                 // eslint-disable-next-line no-alert
                 alert(`Мин. кол-во товара ${minCount}`)
+            }
 
             if (parseInt(countAccs, 10) < parseInt(this.countGoods, 10)) {
                 // eslint-disable-next-line no-alert
