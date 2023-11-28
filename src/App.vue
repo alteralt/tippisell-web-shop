@@ -19,37 +19,37 @@ export default {
         }
     },
     async created() {
-        var subdomain = window.location.host.split(".")[0]
+        const subdomain = window.location.host.split(".")[0]
 
-        var client = new Client()
+        const client = new Client()
         try {
-            var shop = await client.getShopBySubdomain(
+            this.shop = await client.getShopBySubdomain(
                 subdomain.replaceAll("-", "_"),
             )
         } catch (error) {
-            if (error.response.status == 401) {
+            if (error.response.status === 401) {
                 // Если не найден магазин
                 window.location.href = "https://tippisell.xyz"
             }
+            // eslint-disable-next-line no-console
             console.log(error)
+            throw error
         }
 
-        if (shop.web == false) {
+        if (this.shop.web === false) {
             // Если веб-шоп не работает
             window.location.href = "https://tippisell.xyz"
         }
 
-        this.shop = shop
-        this.tippisellClient = new Client(this.shop["id"])
+        this.tippisellClient = new Client(this.shop.id)
 
-        let icon = useFavicon()
-        icon.value = this.shop["web_favicon"]
+        const icon = useFavicon()
+        icon.value = this.shop.web_favicon
 
-        let title = useTitle()
-        title.value = this.shop["web_title"]
+        const title = useTitle()
+        title.value = this.shop.web_title
 
-        document.body.style.background =
-            "url(" + this.shop["web_background"] + ")"
+        document.body.style.background = `url(${this.shop.web_background})`
     },
 }
 </script>

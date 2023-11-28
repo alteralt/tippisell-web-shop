@@ -1,4 +1,4 @@
-name: Code Quality checks
+name: Run ESLint
 on:
     push:
         branches: "*"
@@ -6,21 +6,19 @@ on:
         branches: [main]
 jobs:
     prettier:
-        name: Prettier
+        name: Run ESLint
         runs-on: ubuntu-22.04
         strategy:
             matrix:
                 node-version: [18]
         steps:
             - uses: actions/checkout@v3
-            - uses: pnpm/action-setup@v2
-              with:
-                  version: 8
+
             - name: Use Node.js ${{ matrix.node-version }}
               uses: actions/setup-node@v3
               with:
                   node-version: ${{ matrix.node-version }}
-            - name: Install prettier
-              run: npm install prettier
-            - name: Check formatting with Prettier
-              run: npx prettier . --check
+            - name: Install modules
+              run: npm install
+            - name: Check eslint
+              run: npx eslint src --ext .js,.vue
