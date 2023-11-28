@@ -257,7 +257,10 @@
                                         type="submit"
                                         class="btn btn-success btn-leque"
                                         v-on:click="goToPay"
-                                        :disabled="rules == false || validateEmail(email) == false"
+                                        :disabled="
+                                            rules == false ||
+                                            validateEmail(email) == false
+                                        "
                                     >
                                         Перейти к оплате
                                     </button>
