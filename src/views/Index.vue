@@ -257,7 +257,7 @@
                                         type="submit"
                                         class="btn btn-success btn-leque"
                                         v-on:click="goToPay"
-                                        :disabled="rules == false"
+                                        :disabled="rules == false || validateEmail(email) == false"
                                     >
                                         Перейти к оплате
                                     </button>
@@ -361,17 +361,9 @@ export default {
             // eslint-disable-next-line no-undef
             const countAccs = isiShop.variables.good_count
 
-            if (!this.validateEmail(this.email)) {
-                // eslint-disable-next-line no-alert
-                alert("Укажите Email адрес")
-                return false
-            }
-
             if (parseInt(this.countGoods, 10) < parseInt(minCount, 10)) {
                 // eslint-disable-next-line no-alert
                 alert(`Мин. кол-во товара ${minCount}`)
-                return false
-            }
 
             if (parseInt(countAccs, 10) < parseInt(this.countGoods, 10)) {
                 // eslint-disable-next-line no-alert
