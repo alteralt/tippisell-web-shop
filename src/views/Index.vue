@@ -245,7 +245,7 @@
                                         type="submit"
                                         class="btn btn-success btn-leque"
                                         v-on:click="goToPay"
-                                        :disabled="rules == false"
+                                        :disabled="rules == false || validateEmail(email) == false"
                                     >
                                         Перейти к оплате
                                     </button>
@@ -340,11 +340,6 @@ export default {
 
             var minCount = isiShop.variables.good_mincount
             var count_accs = isiShop.variables.good_count
-
-            if (!this.validateEmail(this.email)) {
-                alert("Укажите Email адрес")
-                return false
-            }
 
             if (parseInt(this.countGoods) < parseInt(minCount)) {
                 alert("Мин. кол-во товара " + minCount)
