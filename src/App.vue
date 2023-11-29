@@ -21,26 +21,34 @@ export default {
         }
     },
     async created() {
-        const subdomain = window.location.host.split(".")[0]
-
         const client = new Client()
-        try {
-            this.shop = await client.getShopBySubdomain(
-                subdomain.replaceAll("-", "_"),
+
+        if (import.meta.env.VITE_SHOP_UUID !== undefined) {
+            // Если указан UUID магазина
+            this.shop = await client.getShopByUUID(
+                import.meta.env.VITE_SHOP_UUID,
             )
-        } catch (error) {
-            if (error.response.status === 401) {
-                // Если не найден магазин
+        } else {
+            const subdomain = window.location.host.split(".")[0]
+
+            try {
+                this.shop = await client.getShopBySubdomain(
+                    subdomain.replaceAll("-", "_"),
+                )
+            } catch (error) {
+                if (error.response.status === 401) {
+                    // Если не найден магазин
+                    window.location.href = this.tippisellUrl
+                }
+                // eslint-disable-next-line no-console
+                console.log(error)
+                throw error
+            }
+
+            if (this.shop.web === false) {
+                // Если веб-шоп не работает
                 window.location.href = this.tippisellUrl
             }
-            // eslint-disable-next-line no-console
-            console.log(error)
-            throw error
-        }
-
-        if (this.shop.web === false) {
-            // Если веб-шоп не работает
-            window.location.href = this.tippisellUrl
         }
 
         this.tippisellClient = new Client(this.shop.id)

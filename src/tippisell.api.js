@@ -66,6 +66,12 @@ class Client {
         return response.data.result
     }
 
+    async getShopByUUID(uuid) {
+        const url = this.makeUrl(`/api/v2/shop/get-by-uuid/${uuid}`)
+        const response = await axios.get(url)
+        return response.data.result
+    }
+
     async getOrNoneCoupon(code) {
         const url = this.makeUrl("/api/coupon")
 
