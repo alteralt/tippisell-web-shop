@@ -8,7 +8,7 @@
         <span v-if="product.is_infinitely == false">{{
             product.count_positions
         }}</span>
-        <img v-else src="/static/images/icons/infinity-svgrepo-com.svg" />
+        <img v-else src="@/assets/images/icons/infinity-svgrepo-com.svg" />
     </td>
     <td>
         <span class="price_tbl">{{ product.price }}</span

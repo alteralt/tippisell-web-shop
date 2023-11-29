@@ -8,6 +8,8 @@ import App from "./App.vue"
 import Index from "./views/Index.vue"
 import Rules from "./views/Rules.vue"
 
+import "./assets/css/style.css"
+
 const router = createRouter({
     routes: [
         {
