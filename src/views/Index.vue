@@ -519,7 +519,7 @@ export default {
             return re.test(email)
         },
         closeBuyPopup() {
-            if (this.payUrl !== null) {
+            if (this.payUrl !== null && this.purchase === null) {
                 // eslint-disable-next-line no-alert, no-restricted-globals
                 const closeConfirm = confirm(
                     "Вы уверены, что хотите прервать процесс покупки?",
