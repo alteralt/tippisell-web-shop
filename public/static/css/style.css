@@ -7212,17 +7212,17 @@ button.close {
  * -------------------------- */
 @font-face {
     font-family: "FontAwesome";
-    src: url("../fonts/fontawesome/fontawesome-webfonte0a5.eot@v=4.3.0");
+    src: url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/fonts/fontawesome-webfont.eot");
     src:
-        url("../fonts/fontawesome/fontawesome-webfontd41d.eot@")
+        url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/fonts/fontawesome-webfont.eot")
             format("embedded-opentype"),
-        url("../fonts/fontawesome/fontawesome-webfonte0a5.woff2@v=4.3.0")
+        url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/fonts/fontawesome-webfont.woff")
             format("woff2"),
-        url("../fonts/fontawesome/fontawesome-webfonte0a5.woff@v=4.3.0")
+        url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/fonts/fontawesome-webfont.woff")
             format("woff"),
-        url("../fonts/fontawesome/fontawesome-webfonte0a5.ttf@v=4.3.0")
+        url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/fonts/fontawesome-webfont.ttf")
             format("truetype"),
-        url("../fonts/fontawesome/fontawesome-webfonte0a5.svg@v=4.3.0")
+        url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/fonts/fontawesome-webfont.svg")
             format("svg");
     font-weight: normal;
     font-style: normal;
