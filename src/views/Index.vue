@@ -511,10 +511,12 @@ export default {
             $("#overlay, .choose_popup, .success_popup").fadeOut("slow")
             $("body").removeClass("popup-open")
 
-            this.currentProduct = null
-            this.payUrl = null
-            this.invoiceId = null
-            this.discountPercent = null
+            setTimeout(() => {
+                this.currentProduct = null
+                this.payUrl = null
+                this.invoiceId = null
+                this.discountPercent = null
+            }, 500)
         }
     },
     // eslint-disable-next-line func-names
