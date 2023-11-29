@@ -70,7 +70,10 @@
                         <div class="popup-modal" style="max-width: 500px">
                             <div class="title">
                                 Оплата
-                                <i class="fa fa-times pull-right" v-on:click="closeBuyPopup"></i>
+                                <i
+                                    class="fa fa-times pull-right"
+                                    v-on:click="closeBuyPopup"
+                                ></i>
                             </div>
 
                             <div
@@ -99,7 +102,7 @@
                                                 id="payitem"
                                                 class="payitem"
                                             >
-                                                {{ currentProduct["name"] }}
+                                                {{ currentProduct.name }}
                                             </td>
                                         </tr>
                                         <tr if v-if="countGoods > 0">
@@ -161,6 +164,7 @@
                                                 type="text"
                                                 v-model="email"
                                                 required
+                                                :disabled="payUrl != null"
                                             />
                                         </td>
                                     </tr>
@@ -176,13 +180,17 @@
                                                 v-model="countGoods"
                                                 type="text"
                                                 class="count"
+                                                :disabled="payUrl != null"
                                             />
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>Способ оплаты</td>
                                         <td>
-                                            <select v-model="payMethod">
+                                            <select
+                                                v-model="payMethod"
+                                                :disabled="payUrl != null"
+                                            >
                                                 <option
                                                     v-for="paymentSystem in shop.payment_methods"
                                                     :key="paymentSystem.id"
@@ -201,6 +209,7 @@
                                                 <input
                                                     class="form-control"
                                                     v-model="couponCode"
+                                                    :disabled="payUrl != null"
                                                 />
                                                 <span class="input-group-btn">
                                                     <button
@@ -249,6 +258,7 @@
                                         name="offer"
                                         required
                                         v-model="rules"
+                                        :disabled="payUrl != null"
                                     />
                                 </div>
                                 <br />
@@ -357,12 +367,20 @@ export default {
         async goToPay(event) {
             event.preventDefault()
 
-            if (parseInt(this.countGoods, 10) < parseInt(this.currentProduct.min_buy, 10)) {
+            if (
+                parseInt(this.countGoods, 10) <
+                parseInt(this.currentProduct.min_buy, 10)
+            ) {
                 // eslint-disable-next-line no-alert
-                alert(`Мин. кол-во товара ${this.currentProduct.min_buyinCount}`)
+                alert(
+                    `Мин. кол-во товара ${this.currentProduct.min_buyinCount}`,
+                )
             }
 
-            if (parseInt(this.currentProduct.count_positions, 10) < parseInt(this.countGoods, 10)) {
+            if (
+                parseInt(this.currentProduct.count_positions, 10) <
+                parseInt(this.countGoods, 10)
+            ) {
                 // eslint-disable-next-line no-alert
                 alert("Такого количества товара нет")
                 return false
@@ -398,7 +416,7 @@ export default {
             $("#selectPay").hide()
             $("#paymodal").show()
 
-            return
+            return null
         },
         async checkPay() {
             $(".checkpaybtn").button("loading")
@@ -502,7 +520,10 @@ export default {
         },
         closeBuyPopup() {
             if (this.payUrl !== null) {
-                const closeConfirm = confirm("Вы уверены, что хотите прервать процесс покупки?")
+                // eslint-disable-next-line no-alert, no-restricted-globals
+                const closeConfirm = confirm(
+                    "Вы уверены, что хотите прервать процесс покупки?",
+                )
                 if (closeConfirm === false) {
                     // Если пользователь уверен, что хочет прервать покупку
                     return
@@ -516,8 +537,10 @@ export default {
                 this.payUrl = null
                 this.invoiceId = null
                 this.discountPercent = null
+                this.email = null
+                this.rules = null
             }, 500)
-        }
+        },
     },
     // eslint-disable-next-line func-names
     data: function () {
