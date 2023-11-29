@@ -542,6 +542,7 @@ export default {
                 this.discountPercent = null
                 this.email = null
                 this.rules = null
+                this.couponCode = null
             }, 500)
         },
     },
