@@ -22,10 +22,12 @@
                 class="navbar-collapse collapse"
             >
                 <ul class="nav navbar-nav">
-                    <li><a href="/">Главная</a></li>
+                    <li>
+                        <router-link to="/">Главная</router-link>
+                    </li>
 
                     <li v-if="shop.web_shop_rules != null">
-                        <a href="rules">Правила</a>
+                        <router-link to="rules">Главная</router-link>
                     </li>
                     <li v-if="shop.web_telegram_bot_link">
                         <a
