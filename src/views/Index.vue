@@ -282,7 +282,10 @@
             </div>
         </div>
 
-        <FooterComponent v-bind:shop="shop" v-bind:tippisellUrl="tippisellUrl"/>
+        <FooterComponent
+            v-bind:shop="shop"
+            v-bind:tippisellUrl="tippisellUrl"
+        />
     </main>
 </template>
 
