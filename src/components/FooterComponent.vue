@@ -3,7 +3,7 @@
         <div class="container">
             <div class="text-muted">
                 Магазин арендован в сервисе
-                <a href="https://{{ index_url }}" target="_blank">TIPPISELL</a>
+                <a :href="tippisellUrl" target="_blank">TIPPISELL</a>
             </div>
         </div>
     </footer>
@@ -11,6 +11,6 @@
 
 <script>
 export default {
-    props: ["shop"],
+    props: ["shop", "tippisellUrl"],
 }
 </script>

@@ -282,7 +282,7 @@
             </div>
         </div>
 
-        <FooterComponent v-bind:shop="shop" />
+        <FooterComponent v-bind:shop="shop" v-bind:tippisellUrl="tippisellUrl"/>
     </main>
 </template>
 
@@ -362,7 +362,7 @@ export default {
         this.categories = categories
     },
     components: { NavBar, FooterComponent, Product },
-    props: ["shop", "tippisellClient"],
+    props: ["shop", "tippisellClient", "tippisellUrl"],
     methods: {
         async goToPay(event) {
             event.preventDefault()

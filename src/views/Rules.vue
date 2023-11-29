@@ -9,7 +9,7 @@
         </div>
     </div>
 
-    <FooterComponent v-bind:shop="shop" />
+    <FooterComponent v-bind:shop="shop" v-bind:tippisellUrl="tippisellUrl"/>
 </template>
 
 <script>
@@ -21,6 +21,6 @@ export default {
         NavBar,
         FooterComponent,
     },
-    props: ["shop"],
+    props: ["shop", "tippisellUrl"],
 }
 </script>

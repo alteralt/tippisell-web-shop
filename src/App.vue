@@ -3,6 +3,7 @@
         v-if="shop != null"
         v-bind:shop="shop"
         v-bind:tippisellClient="tippisellClient"
+        v-bind:tippisellUrl="tippisellUrl"
     />
 </template>
 
@@ -16,6 +17,7 @@ export default {
         return {
             shop: null,
             tippisellClient: null,
+            tippisellUrl: "https://tippisell.xyz",
         }
     },
     async created() {
@@ -29,7 +31,7 @@ export default {
         } catch (error) {
             if (error.response.status === 401) {
                 // Если не найден магазин
-                window.location.href = "https://tippisell.xyz"
+                window.location.href = this.tippisellUrl
             }
             // eslint-disable-next-line no-console
             console.log(error)
@@ -38,7 +40,7 @@ export default {
 
         if (this.shop.web === false) {
             // Если веб-шоп не работает
-            window.location.href = "https://tippisell.xyz"
+            window.location.href = this.tippisellUrl
         }
 
         this.tippisellClient = new Client(this.shop.id)
