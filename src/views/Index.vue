@@ -119,22 +119,13 @@
                                     class="payfoot modal-footer"
                                     style="position: inherit; top: -20px"
                                 >
-                                    <a
-                                        v-if="purchase == null"
-                                        class="btn btn-primary"
-                                        id="go_to_pay_url"
-                                        type="button"
-                                        target="blank"
-                                        :href="payUrl"
-                                        >Перейти к оплате</a
-                                    >
-                                    <input
-                                        v-if="purchase == null"
+                                    <LoadingButton
+                                        v-if="purchase === null"
+                                        text="Проверить оплату"
                                         class="checkpaybtn btn btn-primary"
-                                        value="Проверить оплату"
-                                        data-loading-text="Проверяем..."
-                                        type="button"
+                                        loadingText="Проверяем..."
                                         v-on:click="checkPay"
+                                        :loading="loading.payButton"
                                     />
                                     <a
                                         v-else
@@ -258,17 +249,19 @@
                                 </div>
                                 <br />
                                 <footer>
-                                    <button
+                                    <LoadingButton 
+                                        :loading="loading.goToPayButton" 
                                         type="submit"
                                         class="btn btn-success btn-leque"
-                                        v-on:click="goToPay"
                                         :disabled="
                                             rules == false ||
-                                            validateEmail(email) == false
+                                            validateEmail(email) == false ||
+                                            invoiceId !== null
                                         "
-                                    >
-                                        Перейти к оплате
-                                    </button>
+                                        v-on:click="goToPay"
+                                        text="Перейти к оплате"
+                                        loadingText="Переходим к оплате"
+                                    />
                                 </footer>
                             </form>
                         </div>
@@ -293,6 +286,7 @@ import { loadScript } from "vue-plugin-load-script"
 import FooterComponent from "../components/FooterComponent.vue"
 import NavBar from "../components/NavBarMain.vue"
 import Product from "../components/ProductComponent.vue"
+import LoadingButton from "../components/LoadingButton.vue"
 
 loadScript(
     "https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js",
@@ -359,11 +353,14 @@ export default {
         this.categoriesProducts = categoriesProducts
         this.categories = categories
     },
-    components: { NavBar, FooterComponent, Product },
+    components: {
+        NavBar, FooterComponent, Product, LoadingButton,
+    },
     props: ["shop", "tippisellClient", "tippisellUrl"],
     methods: {
         async goToPay(event) {
             event.preventDefault()
+            this.loading.goToPayButton = true
 
             if (
                 parseInt(this.countGoods, 10) <
@@ -373,6 +370,8 @@ export default {
                 alert(
                     `Мин. кол-во товара ${this.currentProduct.min_buyinCount}`,
                 )
+                this.loading.goToPayButton = false
+                return false
             }
 
             if (
@@ -381,6 +380,7 @@ export default {
             ) {
                 // eslint-disable-next-line no-alert
                 alert("Такого количества товара нет")
+                this.loading.goToPayButton = false
                 return false
             }
 
@@ -408,6 +408,7 @@ export default {
                     this.sumAmount,
                 )
             }
+            this.loading.goToPayButton = false
             this.payUrl = response.url
             this.invoiceId = response.invoice_id
 
@@ -416,7 +417,7 @@ export default {
             return null
         },
         async checkPay() {
-            $(".checkpaybtn").button("loading")
+            this.loading.payButton = true
 
             let isPaid = true
             if (this.payMethod === "aaio") {
@@ -427,7 +428,7 @@ export default {
             }
 
             if (isPaid === false) {
-                $(".checkpaybtn").button("reset")
+                this.loading.payButton = false
                 // eslint-disable-next-line no-alert
                 alert("Платеж не найден! Попробуйте позже")
                 return
@@ -438,7 +439,7 @@ export default {
             )
 
             if (user.balance < this.sumAmount) {
-                $(".checkpaybtn").button("reset")
+                this.loading.payButton = false
                 // eslint-disable-next-line no-alert
                 alert("Платеж не найден! Попробуйте позже")
                 return
@@ -456,7 +457,7 @@ export default {
                 this.currentProduct.id,
                 count,
             )
-            $(".checkpaybtn").button("reset")
+            this.loading.payButton = false
         },
         async checkCoupon() {
             const coupon = await this.tippisellClient.getOrNoneCoupon(
@@ -539,12 +540,18 @@ export default {
                 this.couponCode = null
                 this.sumAmount = null
                 this.countGoods = null
+                this.purchase = null
             }, 500)
         },
     },
     // eslint-disable-next-line func-names
     data: function () {
         return {
+            "loading": {
+                "payButton": false,
+                "goToPayButton": false,
+            },
+
             // v-models
             payMethod: this.shop.payment_methods[0],
             countGoods: 0,
