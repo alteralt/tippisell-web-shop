@@ -235,7 +235,8 @@
                                                 sumAmount
                                             }}</span>
                                             <span id="currency">
-                                                {{ currencySymbol }}.</span
+                                                {{ currencySymbol }}
+                                            </span
                                             >
                                         </td>
                                     </tr>
@@ -543,6 +544,8 @@ export default {
                 this.email = null
                 this.rules = null
                 this.couponCode = null
+                this.sumAmount = null
+                this.countGoods = null
             }, 500)
         },
     },
@@ -573,6 +576,10 @@ export default {
     },
     watch: {
         countGoods(newValue) {
+            if (newValue === null) {
+                return
+            }
+            
             this.sumAmount = this.generateSum(
                 newValue,
                 this.currentProduct.price,
