@@ -76,12 +76,7 @@
                                 ></i>
                             </div>
 
-                            <div
-                                aria-hidden="false"
-                                class=""
-                                id="paymodal"
-                                style="display: none"
-                            >
+                            <div v-if="invoiceId !== null">
                                 <!-- prettier-ignore -->
                                 <table
                                     class="
@@ -236,8 +231,7 @@
                                             }}</span>
                                             <span id="currency">
                                                 {{ currencySymbol }}
-                                            </span
-                                            >
+                                            </span>
                                         </td>
                                     </tr>
                                 </table>
@@ -418,7 +412,6 @@ export default {
             this.invoiceId = response.invoice_id
 
             $("#selectPay").hide()
-            $("#paymodal").show()
 
             return null
         },
@@ -579,7 +572,7 @@ export default {
             if (newValue === null) {
                 return
             }
-            
+
             this.sumAmount = this.generateSum(
                 newValue,
                 this.currentProduct.price,
