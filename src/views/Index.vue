@@ -10,7 +10,7 @@
                     <div class="row row-block row-block-header">
                         <div class="col-md-12">
                             <p class="text-center">
-                                <span style="color: rgb(255, 255, 255)"></span>
+                                <span class="text-white"></span>
                             </p>
                         </div>
                     </div>
