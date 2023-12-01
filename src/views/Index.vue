@@ -306,7 +306,7 @@ export default {
     async created() {
         const values = await Promise.all([
             this.tippisellClient.getAllProducts(),
-            await this.tippisellClient.getAllCategories(),
+            this.tippisellClient.getAllCategories(),
         ])
         // eslint-disable-next-line no-underscore-dangle
         const products_ = values[0]
