@@ -249,8 +249,8 @@
                                 </div>
                                 <br />
                                 <footer>
-                                    <LoadingButton 
-                                        :loading="loading.goToPayButton" 
+                                    <LoadingButton
+                                        :loading="loading.goToPayButton"
                                         type="submit"
                                         class="btn btn-success btn-leque"
                                         :disabled="
@@ -354,7 +354,10 @@ export default {
         this.categories = categories
     },
     components: {
-        NavBar, FooterComponent, Product, LoadingButton,
+        NavBar,
+        FooterComponent,
+        Product,
+        LoadingButton,
     },
     props: ["shop", "tippisellClient", "tippisellUrl"],
     methods: {
@@ -547,9 +550,9 @@ export default {
     // eslint-disable-next-line func-names
     data: function () {
         return {
-            "loading": {
-                "payButton": false,
-                "goToPayButton": false,
+            loading: {
+                payButton: false,
+                goToPayButton: false,
             },
 
             // v-models
