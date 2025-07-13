@@ -86,14 +86,13 @@ class Client {
         return response.data.result
     }
 
-    async createCryptoBotInvoice(userId, amount, coin) {
+    async createCryptoBotInvoice(userId, amount) {
         const url = this.makeUrl(
             `/api/v2/shop/${this.shopId}/create-crypto-bot-invoice`,
         )
         const response = await axios.post(url, {
             user_id: userId,
             amount: amount,
-            coin: coin,
         })
         return response.data.result
     }

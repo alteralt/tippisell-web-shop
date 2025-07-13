@@ -399,11 +399,9 @@ export default {
                     this.sumAmount,
                 )
             } else if (this.payMethod.startsWith("crypto_bot")) {
-                const coin = this.payMethod.split("_")[2].toUpperCase()
                 response = await this.tippisellClient.createCryptoBotInvoice(
                     this.user.id,
                     this.sumAmount,
-                    coin,
                 )
             } else if (this.payMethod === "crystal_pay") {
                 response = await this.tippisellClient.createCrystalPayInvoice(
