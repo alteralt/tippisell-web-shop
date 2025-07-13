@@ -119,10 +119,16 @@
                                     class="payfoot modal-footer"
                                     style="position: inherit; top: -20px"
                                 >
-                                    <a type="button" class="checkpaybtn btn btn-primary" v-if="payUrl" :href="payUrl" target="blank">
+                                    <a
+                                        type="button"
+                                        class="checkpaybtn btn btn-primary"
+                                        v-if="payUrl"
+                                        :href="payUrl"
+                                        target="blank"
+                                    >
                                         Оплатить
                                     </a>
-                                    
+
                                     <LoadingButton
                                         v-if="purchase === null"
                                         text="Проверить оплату"
