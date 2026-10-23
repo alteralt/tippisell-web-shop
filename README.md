@@ -1,5 +1,7 @@
 # tippisell_web_shop
 
+Как выложить веб-версию магазина на свой домен: [инструкция на tippisell.cc](https://tippisell.cc/help/article/veb-versiya-magazina).
+
 This template should help get you started developing with Vue 3 in Vite.
 
 ## Recommended IDE Setup
