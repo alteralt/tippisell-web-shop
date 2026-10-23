@@ -1,7 +1,7 @@
 import axios from "axios"
 
 class Client {
-    endpoint = "https://tippisell.xyz"
+    endpoint = "https://app.tippisell.cc"
 
     constructor(shopId = null) {
         this.shopId = shopId

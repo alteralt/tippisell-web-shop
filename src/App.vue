@@ -17,7 +17,7 @@ export default {
         return {
             shop: null,
             tippisellClient: null,
-            tippisellUrl: "https://tippisell.xyz",
+            tippisellUrl: "https://app.tippisell.cc",
         }
     },
     async created() {
