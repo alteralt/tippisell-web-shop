@@ -26,3 +26,11 @@ coverage
 *.sln
 *.sw?
 .env
+
+# AI tooling (local-only)
+.ai-factory/
+.ai-factory.json
+.claude/
+.mcp.json
+AGENTS.md
+skills-lock.json
