@@ -1,309 +1,288 @@
 <template>
-    <main id="content" class="b-shop">
-        <Transition name="fade">
-            <div v-if="popupOpened" id="overlay" style="display: block"></div>
+    <main>
+        <Transition
+            enter-active-class="transition-opacity duration-[600ms]"
+            leave-active-class="transition-opacity duration-[600ms]"
+            enter-from-class="opacity-0"
+            leave-to-class="opacity-0"
+        >
+            <div v-if="popupOpened" class="fixed inset-0 z-2 bg-black/80"></div>
         </Transition>
 
         <NavBarMain />
 
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="row row-block row-block-header">
-                        <div class="col-md-12">
-                            <p class="text-center">
-                                <span class="text-white"></span>
-                            </p>
-                        </div>
-                    </div>
+        <ShopContainer>
+            <div class="mb-[30px] h-[41px] bg-black/40"></div>
+
+            <div
+                class="overflow-x-auto max-[767px]:mb-[15px] max-[767px]:border max-[767px]:border-[#ddd]"
+            >
+                <table
+                    class="w-full border-collapse border border-[#ddd] max-[767px]:border-0"
+                >
+                    <tr class="bg-[#fff8dc]">
+                        <th :class="headClass">Продукт</th>
+                        <th :class="headClass">Кол&#8209;во</th>
+                        <th :class="headClass">За&nbsp;1&nbsp;шт.</th>
+                        <th :class="headClass"></th>
+                    </tr>
+
+                    <tr
+                        v-for="product in catalog.products"
+                        :key="product.id"
+                        class="bg-[#fff8dc]"
+                    >
+                        <ProductComponent
+                            :product="product"
+                            :currency-symbol="currencySymbol"
+                            @buy="buy"
+                        />
+                    </tr>
+                    <template
+                        v-for="category in catalog.categories"
+                        :key="category.id"
+                    >
+                        <tr class="bg-black text-white">
+                            <td
+                                colspan="4"
+                                class="border border-[#ddd] p-2 text-center align-top max-[767px]:whitespace-nowrap"
+                            >
+                                {{ category.name }}
+                            </td>
+                        </tr>
+                        <tr
+                            v-for="product in catalog.categoriesProducts[
+                                category.id
+                            ]"
+                            :key="product.id"
+                            class="bg-[#fff8dc]"
+                        >
+                            <ProductComponent
+                                :product="product"
+                                :currency-symbol="currencySymbol"
+                                @buy="buy"
+                            />
+                        </tr>
+                    </template>
+                </table>
+            </div>
+
+            <Transition
+                enter-active-class="transition-opacity duration-[600ms]"
+                leave-active-class="transition-opacity duration-[600ms]"
+                enter-from-class="opacity-0"
+                leave-to-class="opacity-0"
+                @after-leave="resetPurchase"
+            >
+                <div
+                    v-if="popupOpened"
+                    class="fixed inset-0 z-100 overflow-x-hidden overflow-y-auto"
+                >
                     <div
-                        class="fslides"
-                        style="
-                            display: flex;
-                            justify-content: center;
-                            align-items: center;
-                            margin-bottom: 10px;
-                            flex-wrap: wrap;
-                        "
-                    ></div>
-
-                    <div class="table-responsive">
-                        <table class="table table-bordered shop_goods">
-                            <tr>
-                                <th>Продукт</th>
-                                <th>Кол&#8209;во</th>
-                                <th>За&nbsp;1&nbsp;шт.</th>
-                                <th></th>
-                            </tr>
-
-                            <tr
-                                v-for="product in catalog.products"
-                                :key="product.id"
+                        class="mx-auto my-[50px] max-w-[500px] rounded-[5px] bg-white px-5 pt-[15px] pb-5"
+                    >
+                        <div
+                            class="-mx-5 flex items-center justify-between border-b border-[#eef0f0] pb-[15px] pl-5 font-bold uppercase"
+                        >
+                            Оплата
+                            <button
+                                type="button"
+                                class="mx-5 flex cursor-pointer text-[20px] text-[#a3a5a8]"
+                                aria-label="Закрыть"
+                                @click="closeBuyPopup"
                             >
-                                <ProductComponent
-                                    :product="product"
-                                    :currency-symbol="currencySymbol"
-                                    @buy="buy"
+                                <Icon name="fa:close" class="text-[14.6px]" />
+                            </button>
+                        </div>
+
+                        <div v-if="invoiceId !== null">
+                            <table
+                                class="mt-2.5 mb-5 w-full border-collapse text-[16px] [&_td]:border [&_td]:border-[#ddd] [&_td]:p-2 [&_td]:align-top [&_td]:text-black [&_td:first-child]:w-[140px] [&_tr:hover]:bg-[#f5f5f5] [&_tr:nth-of-type(odd)]:bg-[#f9f9f9]"
+                            >
+                                <tbody>
+                                    <tr>
+                                        <td>Товар:</td>
+                                        <td
+                                            v-if="currentProduct != null"
+                                            class="w-[100px]"
+                                        >
+                                            {{ currentProduct.name }}
+                                        </td>
+                                    </tr>
+                                    <tr v-if="countGoods > 0">
+                                        <td>Кол-во:</td>
+                                        <td>{{ countGoods }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>К оплате:</td>
+                                        <td>
+                                            {{ sumAmount }}
+                                            {{ currencySymbol }}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div
+                                class="border-t border-[#e5e5e5] p-[15px] text-right [&>*+*]:ml-[5px]"
+                            >
+                                <a
+                                    v-if="payUrl"
+                                    :class="[buttonClass, primaryClass]"
+                                    :href="payUrl"
+                                    target="blank"
+                                >
+                                    Оплатить
+                                </a>
+
+                                <LoadingButton
+                                    v-if="purchase === null"
+                                    text="Проверить оплату"
+                                    :class="[buttonClass, primaryClass]"
+                                    loading-text="Проверяем..."
+                                    :loading="loading.payButton"
+                                    @click="checkPay"
                                 />
-                            </tr>
-                            <template
-                                v-for="category in catalog.categories"
-                                :key="category.id"
+                                <a
+                                    v-else
+                                    :class="[buttonClass, primaryClass]"
+                                    :href="purchase.download_url ?? undefined"
+                                    target="blank"
+                                    >Скачать файл</a
+                                >
+                            </div>
+                        </div>
+                        <form v-if="currentProduct != null">
+                            <table
+                                class="mt-2.5 w-full [&_td]:px-[5px] [&_td]:py-[7px] [&_td:first-child]:w-[140px]"
                             >
-                                <tr class="separator">
-                                    <td colspan="4" class="text-center">
-                                        {{ category.name }}
+                                <tr>
+                                    <td colspan="2">
+                                        {{ currentProduct.name }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Email:</td>
+                                    <td>
+                                        <input
+                                            v-model="email"
+                                            type="text"
+                                            required
+                                            :class="fieldClass"
+                                            class="w-full"
+                                            :disabled="payUrl != null"
+                                        />
                                     </td>
                                 </tr>
                                 <tr
-                                    v-for="product in catalog
-                                        .categoriesProducts[category.id]"
-                                    :key="product.id"
+                                    v-if="currentProduct.is_infinitely == false"
                                 >
-                                    <ProductComponent
-                                        :product="product"
-                                        :currency-symbol="currencySymbol"
-                                        @buy="buy"
-                                    />
-                                </tr>
-                            </template>
-                        </table>
-                    </div>
-
-                    <Transition name="fade" @after-leave="resetPurchase">
-                        <div
-                            v-if="popupOpened"
-                            class="choose_popup"
-                            style="display: block"
-                        >
-                            <div class="popup-modal" style="max-width: 500px">
-                                <div class="title">
-                                    Оплата
-                                    <i
-                                        class="fa fa-times pull-right"
-                                        @click="closeBuyPopup"
-                                    ></i>
-                                </div>
-
-                                <div v-if="invoiceId !== null">
-                                    <table
-                                        class="additionaltable table table-striped table-bordered table-hover"
-                                        style="
-                                            font-size: 16px;
-                                            position: relative;
-                                        "
-                                    >
-                                        <tbody>
-                                            <tr>
-                                                <td>Товар:</td>
-                                                <td
-                                                    v-if="
-                                                        currentProduct != null
-                                                    "
-                                                    id="payitem"
-                                                    style="width: 100px"
-                                                    class="payitem"
-                                                >
-                                                    {{ currentProduct.name }}
-                                                </td>
-                                            </tr>
-                                            <tr v-if="countGoods > 0">
-                                                <td>Кол-во:</td>
-                                                <td
-                                                    id="paycount"
-                                                    class="paycount"
-                                                >
-                                                    {{ countGoods }}
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>К оплате:</td>
-                                                <td
-                                                    id="payprice"
-                                                    class="payprice"
-                                                >
-                                                    {{ sumAmount }}
-                                                    {{ currencySymbol }}
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                    <div
-                                        class="payfoot modal-footer"
-                                        style="position: inherit; top: -20px"
-                                    >
-                                        <a
-                                            v-if="payUrl"
-                                            type="button"
-                                            class="checkpaybtn btn btn-primary"
-                                            :href="payUrl"
-                                            target="blank"
-                                        >
-                                            Оплатить
-                                        </a>
-
-                                        <LoadingButton
-                                            v-if="purchase === null"
-                                            text="Проверить оплату"
-                                            class="checkpaybtn btn btn-primary"
-                                            loading-text="Проверяем..."
-                                            :loading="loading.payButton"
-                                            @click="checkPay"
-                                        />
-                                        <a
-                                            v-else
-                                            class="checkpaybtn btn btn-primary"
-                                            :href="
-                                                purchase.download_url ??
-                                                undefined
-                                            "
-                                            target="blank"
-                                            >Скачать файл</a
-                                        >
-                                    </div>
-                                </div>
-                                <form v-if="currentProduct != null" id="order">
-                                    <table>
-                                        <tr>
-                                            <td colspan="2">
-                                                {{ currentProduct.name }}
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>Email:</td>
-                                            <td>
-                                                <input
-                                                    v-model="email"
-                                                    type="text"
-                                                    required
-                                                    :disabled="payUrl != null"
-                                                />
-                                            </td>
-                                        </tr>
-                                        <tr
-                                            v-if="
-                                                currentProduct.is_infinitely ==
-                                                false
-                                            "
-                                        >
-                                            <td>Количество:</td>
-                                            <td>
-                                                <input
-                                                    v-model="countGoods"
-                                                    type="text"
-                                                    class="count"
-                                                    :disabled="payUrl != null"
-                                                />
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>Способ оплаты</td>
-                                            <td>
-                                                <select
-                                                    v-model="payMethod"
-                                                    :disabled="payUrl != null"
-                                                >
-                                                    <option
-                                                        v-for="paymentSystem in shop.payment_methods"
-                                                        :key="paymentSystem"
-                                                        :value="paymentSystem"
-                                                    >
-                                                        {{ paymentSystem }}
-                                                    </option>
-                                                </select>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>Код купона:</td>
-                                            <td>
-                                                <div class="input-group">
-                                                    <input
-                                                        v-model="couponCode"
-                                                        class="form-control"
-                                                        :disabled="
-                                                            payUrl != null
-                                                        "
-                                                    />
-                                                    <span
-                                                        class="input-group-btn"
-                                                    >
-                                                        <button
-                                                            class="btn btn-success shadow-none"
-                                                            type="button"
-                                                            :disabled="
-                                                                !couponCode
-                                                            "
-                                                            @click="checkCoupon"
-                                                        >
-                                                            Применить
-                                                        </button>
-                                                    </span>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>К оплате:</td>
-                                            <td class="sum">
-                                                <span id="sum">{{
-                                                    sumAmount
-                                                }}</span>
-                                                <span
-                                                    v-if="
-                                                        typeof sumAmount ===
-                                                        'number'
-                                                    "
-                                                    id="currency"
-                                                >
-                                                    {{ currencySymbol }}
-                                                </span>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                    <div
-                                        v-if="shop.web_shop_rules != null"
-                                        class="soglas"
-                                    >
-                                        Согласен С
-                                        <NuxtLink
-                                            :to="{ name: 'rules' }"
-                                            target="blank"
-                                            style="color: #0010c6"
-                                        >
-                                            правилами/условиями
-                                        </NuxtLink>
-                                        магазина
+                                    <td>Количество:</td>
+                                    <td>
                                         <input
-                                            v-model="rules"
-                                            type="checkbox"
-                                            name="offer"
-                                            required
+                                            v-model="countGoods"
+                                            type="text"
+                                            :class="fieldClass"
+                                            class="w-[100px]"
                                             :disabled="payUrl != null"
                                         />
-                                    </div>
-                                    <br />
-                                    <footer>
-                                        <LoadingButton
-                                            :loading="loading.goToPayButton"
-                                            type="submit"
-                                            class="btn btn-success btn-leque"
-                                            :disabled="
-                                                (shop.web_shop_rules != null &&
-                                                    rules == false) ||
-                                                validateEmail(email) == false ||
-                                                invoiceId !== null
-                                            "
-                                            text="Перейти к оплате"
-                                            loading-text="Переходим к оплате"
-                                            @click="goToPay"
-                                        />
-                                    </footer>
-                                </form>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Способ оплаты</td>
+                                    <td>
+                                        <select
+                                            v-model="payMethod"
+                                            class="h-[30px] border border-[#dcdfdf] bg-white p-1.5 leading-[normal] text-black disabled:opacity-70"
+                                            :disabled="payUrl != null"
+                                        >
+                                            <option
+                                                v-for="paymentSystem in shop.payment_methods"
+                                                :key="paymentSystem"
+                                                :value="paymentSystem"
+                                            >
+                                                {{ paymentSystem }}
+                                            </option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Код купона:</td>
+                                    <td>
+                                        <div class="flex">
+                                            <input
+                                                v-model="couponCode"
+                                                class="h-[34px] w-full min-w-0 rounded-l border border-[#ccc] bg-white px-3 py-1.5 text-[#555] shadow-[inset_0_1px_1px_rgba(0,0,0,0.075)] transition-[border-color,box-shadow] duration-150 focus:border-[#66afe9] focus:shadow-[inset_0_1px_1px_rgba(0,0,0,0.075),0_0_8px_rgba(102,175,233,0.6)] focus:outline-none disabled:cursor-not-allowed disabled:bg-[#eee]"
+                                                :disabled="payUrl != null"
+                                            />
+                                            <button
+                                                :class="[
+                                                    buttonClass,
+                                                    successClass,
+                                                ]"
+                                                class="-ml-px rounded-l-none"
+                                                type="button"
+                                                :disabled="!couponCode"
+                                                @click="checkCoupon"
+                                            >
+                                                Применить
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>К оплате:</td>
+                                    <td class="font-bold text-[#1f9e5b]">
+                                        <span>{{ sumAmount }}</span>
+                                        <span
+                                            v-if="typeof sumAmount === 'number'"
+                                        >
+                                            {{ currencySymbol }}
+                                        </span>
+                                    </td>
+                                </tr>
+                            </table>
+                            <div v-if="shop.web_shop_rules != null">
+                                Согласен С
+                                <NuxtLink
+                                    :to="{ name: 'rules' }"
+                                    target="blank"
+                                    class="text-[#0010c6]"
+                                >
+                                    правилами/условиями
+                                </NuxtLink>
+                                магазина
+                                <input
+                                    v-model="rules"
+                                    type="checkbox"
+                                    name="offer"
+                                    required
+                                    :disabled="payUrl != null"
+                                />
                             </div>
-                        </div>
-                    </Transition>
+                            <br />
+                            <footer
+                                class="overflow-hidden border-t border-[#eef0f0] pt-5"
+                            >
+                                <LoadingButton
+                                    :loading="loading.goToPayButton"
+                                    type="submit"
+                                    :class="[buttonClass, successClass]"
+                                    :disabled="
+                                        (shop.web_shop_rules != null &&
+                                            rules == false) ||
+                                        validateEmail(email) == false ||
+                                        invoiceId !== null
+                                    "
+                                    text="Перейти к оплате"
+                                    loading-text="Переходим к оплате"
+                                    @click="goToPay"
+                                />
+                            </footer>
+                        </form>
+                    </div>
                 </div>
-            </div>
-        </div>
+            </Transition>
+        </ShopContainer>
 
         <FooterComponent />
     </main>
@@ -365,6 +344,20 @@ const currencySymbol = new Intl.NumberFormat("ru", {
 const loading = reactive({ payButton: false, goToPayButton: false })
 
 const popupOpened = ref(false)
+
+const headClass = "border border-[#ddd] p-2 text-center align-top"
+
+const buttonClass =
+    "inline-block cursor-pointer rounded border px-3 py-1.5 text-center text-[14px] leading-[1.42857] whitespace-nowrap select-none disabled:cursor-not-allowed disabled:opacity-65 disabled:shadow-none"
+
+const successClass =
+    "border-black bg-black text-white hover:border-[#398439] hover:bg-[#449d44] disabled:border-[#4cae4c] disabled:bg-[#5cb85c]"
+
+const primaryClass =
+    "border-transparent bg-[#337ab7] text-white hover:border-[#204d74] hover:bg-[#286090]"
+
+const fieldClass =
+    "border border-[#dcdfdf] bg-white p-1.5 text-[0.9em] text-black disabled:bg-[rgba(239,239,239,0.3)]"
 const currentProduct = ref<Product | null>(null)
 const payMethod = ref(shop.value.payment_methods[0]!)
 const countGoods = ref<number | string>(0)
@@ -377,7 +370,9 @@ const discountPercent = ref(0)
 const user = ref<User | null>(null)
 const purchase = ref<Purchase | null>(null)
 
-useHead({ bodyAttrs: { class: () => (popupOpened.value ? "popup-open" : "") } })
+useHead({
+    bodyAttrs: { class: () => (popupOpened.value ? "overflow-hidden" : "") },
+})
 
 const sumAmount = computed(() => {
     if (currentProduct.value === null) {

@@ -38,7 +38,9 @@ const { data: shop } = await useAsyncData(SHOP_KEY, loadShop)
 useHead({
     title: () => shop.value?.web_title,
     link: () => [{ rel: "icon", href: shop.value?.web_favicon }],
+    htmlAttrs: { class: "relative min-h-full" },
     bodyAttrs: {
+        class: "mb-10 font-[Helvetica_Neue,Helvetica,Arial,sans-serif] text-[14px] leading-[1.42857] text-[#333]",
         style: () =>
             shop.value ? `background: url(${shop.value.web_background})` : "",
     },

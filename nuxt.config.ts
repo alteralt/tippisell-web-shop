@@ -1,5 +1,12 @@
+import tailwindcss from "@tailwindcss/vite"
+
 export default defineNuxtConfig({
-    modules: ["@nuxt/eslint", "floating-vue/nuxt", "@sentry/nuxt/module"],
+    modules: [
+        "@nuxt/eslint",
+        "@nuxt/icon",
+        "floating-vue/nuxt",
+        "@sentry/nuxt/module",
+    ],
 
     sourcemap: { client: process.env.SENTRY_AUTH_TOKEN ? "hidden" : false },
 
@@ -13,18 +20,16 @@ export default defineNuxtConfig({
 
     ssr: false,
 
-    css: ["~/assets/css/style.css"],
+    css: ["~/assets/css/main.css"],
 
     app: {
         head: {
             htmlAttrs: { lang: "ru" },
-            link: [
-                {
-                    rel: "stylesheet",
-                    href: "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css",
-                },
-            ],
         },
+    },
+
+    vite: {
+        plugins: [tailwindcss()],
     },
 
     runtimeConfig: {
