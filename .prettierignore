@@ -1,4 +1,7 @@
-.vscode
+.nuxt
+.output
+.data
+node_modules
+public
 package-lock.json
-package.json
 dist

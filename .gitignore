@@ -34,3 +34,8 @@ coverage
 .mcp.json
 AGENTS.md
 skills-lock.json
+
+# Nuxt
+.nuxt
+.output
+.data

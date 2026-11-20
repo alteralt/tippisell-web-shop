@@ -4,11 +4,11 @@
             <div class="navbar-header">
                 <button
                     type="button"
-                    class="navbar-toggle collapsed"
-                    data-toggle="collapse"
-                    data-target="#navbar"
-                    aria-expanded="false"
+                    class="navbar-toggle"
+                    :class="{ collapsed: !opened }"
                     aria-controls="navbar"
+                    :aria-expanded="opened"
+                    @click="opened = !opened"
                 >
                     <span class="sr-only">Toggle navigation</span>
                     <span class="icon-bar"></span>
@@ -17,22 +17,22 @@
                 </button>
             </div>
             <div
-                v-if="shop != null"
                 id="navbar"
                 class="navbar-collapse collapse"
+                :class="{ in: opened }"
             >
                 <ul class="nav navbar-nav">
                     <li>
-                        <router-link to="/">Главная</router-link>
+                        <NuxtLink :to="{ name: 'index' }">Главная</NuxtLink>
                     </li>
 
                     <li v-if="shop.web_shop_rules != null">
-                        <router-link to="rules">Главная</router-link>
+                        <NuxtLink :to="{ name: 'rules' }">Правила</NuxtLink>
                     </li>
                     <li v-if="shop.web_telegram_bot_link">
                         <a
                             target="_blank"
-                            v-bind:href="'https://t.me/' + shop['bot_username']"
+                            :href="'https://t.me/' + shop.bot_username"
                             >TELEGRAM BOT</a
                         >
                     </li>
@@ -42,8 +42,8 @@
     </nav>
 </template>
 
-<script>
-export default {
-    props: ["shop"],
-}
+<script setup lang="ts">
+const shop = useShop()
+
+const opened = ref(false)
 </script>

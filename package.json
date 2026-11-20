@@ -1,29 +1,30 @@
 {
-  "name": "tippisell_web_shop",
-  "version": "0.0.0",
-  "private": true,
-  "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
-  },
-  "dependencies": {
-    "@sentry/vue": "^7.81.1",
-    "@vueuse/core": "^10.5.0",
-    "axios": "^1.6.0",
-    "currency-symbols": "^0.4.1",
-    "floating-vue": "^2.0.0-beta.24",
-    "vue": "^3.3.4",
-    "vue-plugin-load-script": "^2.1.1",
-    "vue-router": "^4.2.5"
-  },
-  "devDependencies": {
-    "@vitejs/plugin-vue": "^4.4.0",
-    "eslint": "^8.54.0",
-    "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-plugin-import": "^2.29.0",
-    "eslint-plugin-vue": "^9.18.1",
-    "prettier": "3.1.0",
-    "vite": "^4.4.11"
-  }
+    "name": "tippisell_web_shop",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "build": "nuxt generate",
+        "dev": "nuxt dev",
+        "preview": "nuxt preview",
+        "postinstall": "nuxt prepare",
+        "lint": "eslint .",
+        "lint:prettier": "prettier . --check",
+        "lint:fix": "eslint . --fix && prettier --write --list-different ."
+    },
+    "dependencies": {
+        "@sentry/nuxt": "^11.15.0",
+        "floating-vue": "^5.4.0",
+        "nuxt": "^4.6.4",
+        "vue": "^3.5.45",
+        "vue-router": "^5.5.1"
+    },
+    "devDependencies": {
+        "@nuxt/eslint": "^1.17.0",
+        "@types/node": "^26.6.6",
+        "eslint": "^10.15.0",
+        "eslint-config-prettier": "^10.1.8",
+        "prettier": "^3.10.1",
+        "typescript": "^6.0.3",
+        "vue-tsc": "^3.3.14"
+    }
 }
