@@ -16,6 +16,10 @@ jobs:
                   key: ${{ secrets.SSH_PRIVATE_KEY }}
                   port: 22
                   script: |
+                      set -e
+                      export NVM_DIR="$HOME/.nvm"
+                      . "$NVM_DIR/nvm.sh"
+                      nvm use 24
                       cd ${{ secrets.PROJECT_PATH }}
                       git pull origin main
                       git status
