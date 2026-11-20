@@ -6,7 +6,7 @@
         <ShopContainer
             class="pt-3 text-right font-[Open_Sans,sans-serif] text-xs text-white"
         >
-            Магазин арендован в сервисе
+            {{ $t("footer.rented") }}
             <a
                 :href="TIPPISELL_URL"
                 target="_blank"

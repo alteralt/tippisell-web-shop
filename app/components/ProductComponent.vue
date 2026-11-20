@@ -32,7 +32,7 @@
             @click="emit('buy', product)"
         >
             <Icon name="fa:shopping-cart" class="text-[11px]" />
-            Купить
+            {{ $t("catalog.buy") }}
         </button>
     </td>
 </template>

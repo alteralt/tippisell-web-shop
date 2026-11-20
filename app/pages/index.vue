@@ -21,9 +21,9 @@
                     class="w-full border-collapse border border-[#ddd] max-[767px]:border-0"
                 >
                     <tr class="bg-[#fff8dc]">
-                        <th :class="headClass">Продукт</th>
-                        <th :class="headClass">Кол&#8209;во</th>
-                        <th :class="headClass">За&nbsp;1&nbsp;шт.</th>
+                        <th :class="headClass">{{ $t("catalog.product") }}</th>
+                        <th :class="headClass">{{ $t("catalog.count") }}</th>
+                        <th :class="headClass">{{ $t("catalog.price") }}</th>
                         <th :class="headClass"></th>
                     </tr>
 
@@ -84,11 +84,11 @@
                         <div
                             class="-mx-5 flex items-center justify-between border-b border-[#eef0f0] pb-[15px] pl-5 font-bold uppercase"
                         >
-                            Оплата
+                            {{ $t("payment.title") }}
                             <button
                                 type="button"
                                 class="mx-5 flex cursor-pointer text-[20px] text-[#a3a5a8]"
-                                aria-label="Закрыть"
+                                :aria-label="$t('payment.close')"
                                 @click="closeBuyPopup"
                             >
                                 <Icon name="fa:close" class="text-[14.6px]" />
@@ -101,7 +101,7 @@
                             >
                                 <tbody>
                                     <tr>
-                                        <td>Товар:</td>
+                                        <td>{{ $t("payment.product") }}</td>
                                         <td
                                             v-if="currentProduct != null"
                                             class="w-[100px]"
@@ -110,11 +110,11 @@
                                         </td>
                                     </tr>
                                     <tr v-if="countGoods > 0">
-                                        <td>Кол-во:</td>
+                                        <td>{{ $t("payment.count") }}</td>
                                         <td>{{ countGoods }}</td>
                                     </tr>
                                     <tr>
-                                        <td>К оплате:</td>
+                                        <td>{{ $t("payment.total") }}</td>
                                         <td>
                                             {{ sumAmount }}
                                             {{ currencySymbol }}
@@ -131,14 +131,14 @@
                                     :href="payUrl"
                                     target="blank"
                                 >
-                                    Оплатить
+                                    {{ $t("payment.pay") }}
                                 </a>
 
                                 <LoadingButton
                                     v-if="purchase === null"
-                                    text="Проверить оплату"
+                                    :text="$t('payment.check')"
                                     :class="[buttonClass, primaryClass]"
-                                    loading-text="Проверяем..."
+                                    :loading-text="$t('payment.checking')"
                                     :loading="loading.payButton"
                                     @click="checkPay"
                                 />
@@ -147,7 +147,7 @@
                                     :class="[buttonClass, primaryClass]"
                                     :href="purchase.download_url ?? undefined"
                                     target="blank"
-                                    >Скачать файл</a
+                                    >{{ $t("payment.download") }}</a
                                 >
                             </div>
                         </div>
@@ -176,7 +176,7 @@
                                 <tr
                                     v-if="currentProduct.is_infinitely == false"
                                 >
-                                    <td>Количество:</td>
+                                    <td>{{ $t("payment.quantity") }}</td>
                                     <td>
                                         <input
                                             v-model="countGoods"
@@ -188,7 +188,7 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td>Способ оплаты</td>
+                                    <td>{{ $t("payment.method") }}</td>
                                     <td>
                                         <select
                                             v-model="payMethod"
@@ -206,7 +206,7 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td>Код купона:</td>
+                                    <td>{{ $t("payment.coupon") }}</td>
                                     <td>
                                         <div class="flex">
                                             <input
@@ -224,13 +224,13 @@
                                                 :disabled="!couponCode"
                                                 @click="checkCoupon"
                                             >
-                                                Применить
+                                                {{ $t("payment.apply") }}
                                             </button>
                                         </div>
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td>К оплате:</td>
+                                    <td>{{ $t("payment.total") }}</td>
                                     <td class="font-bold text-[#1f9e5b]">
                                         <span>{{ sumAmount }}</span>
                                         <span
@@ -242,15 +242,17 @@
                                 </tr>
                             </table>
                             <div v-if="shop.web_shop_rules != null">
-                                Согласен С
-                                <NuxtLink
-                                    :to="{ name: 'rules' }"
-                                    target="blank"
-                                    class="text-[#0010c6]"
-                                >
-                                    правилами/условиями
-                                </NuxtLink>
-                                магазина
+                                <i18n-t keypath="payment.agree" scope="global">
+                                    <template #rules>
+                                        <NuxtLink
+                                            :to="{ name: 'rules' }"
+                                            target="blank"
+                                            class="text-[#0010c6]"
+                                        >
+                                            {{ $t("payment.rulesLink") }}
+                                        </NuxtLink>
+                                    </template>
+                                </i18n-t>
                                 <input
                                     v-model="rules"
                                     type="checkbox"
@@ -273,8 +275,8 @@
                                         validateEmail(email) == false ||
                                         invoiceId !== null
                                     "
-                                    text="Перейти к оплате"
-                                    loading-text="Переходим к оплате"
+                                    :text="$t('payment.goToPay')"
+                                    :loading-text="$t('payment.goingToPay')"
                                     @click="goToPay"
                                 />
                             </footer>
@@ -341,6 +343,8 @@ const currencySymbol = new Intl.NumberFormat("ru", {
     .formatToParts(0)
     .find((part) => part.type === "currency")!.value
 
+const { t } = useI18n()
+
 const loading = reactive({ payButton: false, goToPayButton: false })
 
 const popupOpened = ref(false)
@@ -381,7 +385,7 @@ const sumAmount = computed(() => {
 
     const count = Number(countGoods.value)
     if (count > (currentProduct.value.count_positions ?? 0)) {
-        return "Такого кол-ва товара нет"
+        return t("payment.notEnough")
     }
 
     let sum = currentProduct.value.price * count
@@ -412,13 +416,13 @@ const goToPay = async (event: Event) => {
     loading.goToPayButton = true
 
     if (count < product.min_buy) {
-        alert(`Мин. кол-во товара ${product.min_buy}`)
+        alert(t("payment.minCount", { count: product.min_buy }))
         loading.goToPayButton = false
         return
     }
 
     if ((product.count_positions ?? 0) < count) {
-        alert("Такого количества товара нет")
+        alert(t("payment.notEnough"))
         loading.goToPayButton = false
         return
     }
@@ -451,7 +455,7 @@ const checkPay = async () => {
 
     if (isPaid === false) {
         loading.payButton = false
-        alert("Платеж не найден! Попробуйте позже")
+        alert(t("payment.notFound"))
         return
     }
 
@@ -459,7 +463,7 @@ const checkPay = async () => {
 
     if (freshUser.balance < (sumAmount.value as number)) {
         loading.payButton = false
-        alert("Платеж не найден! Попробуйте позже")
+        alert(t("payment.notFound"))
         return
     }
 
@@ -480,7 +484,7 @@ const closeBuyPopup = () => {
     if (
         payUrl.value !== null &&
         purchase.value === null &&
-        confirm("Вы уверены, что хотите прервать процесс покупки?") === false
+        confirm(t("payment.abort")) === false
     ) {
         return
     }

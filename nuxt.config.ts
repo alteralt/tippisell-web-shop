@@ -4,6 +4,7 @@ export default defineNuxtConfig({
     modules: [
         "@nuxt/eslint",
         "@nuxt/icon",
+        "@nuxtjs/i18n",
         "floating-vue/nuxt",
         "@sentry/nuxt/module",
     ],
@@ -22,10 +23,13 @@ export default defineNuxtConfig({
 
     css: ["~/assets/css/main.css"],
 
-    app: {
-        head: {
-            htmlAttrs: { lang: "ru" },
-        },
+    i18n: {
+        defaultLocale: "ru",
+        strategy: "no_prefix",
+        locales: [
+            { code: "ru", language: "ru-RU", file: "ru.json" },
+            { code: "en", language: "en-US", file: "en.json" },
+        ],
     },
 
     vite: {

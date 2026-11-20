@@ -1,0 +1,38 @@
+{
+    "nav": {
+        "home": "Home",
+        "rules": "Rules"
+    },
+    "footer": {
+        "rented": "Shop powered by"
+    },
+    "catalog": {
+        "product": "Product",
+        "count": "Qty",
+        "price": "Price per item",
+        "buy": "Buy"
+    },
+    "payment": {
+        "title": "Payment",
+        "close": "Close",
+        "product": "Product:",
+        "count": "Qty:",
+        "total": "Total:",
+        "pay": "Pay",
+        "check": "Check payment",
+        "checking": "Checking...",
+        "download": "Download file",
+        "quantity": "Quantity:",
+        "method": "Payment method",
+        "coupon": "Coupon code:",
+        "apply": "Apply",
+        "agree": "I agree to the shop {rules}",
+        "rulesLink": "rules and terms",
+        "goToPay": "Proceed to payment",
+        "goingToPay": "Proceeding to payment",
+        "notEnough": "Not enough items in stock",
+        "minCount": "Minimum quantity: {count}",
+        "notFound": "Payment not found. Please try again later",
+        "abort": "Are you sure you want to cancel the purchase?"
+    }
+}

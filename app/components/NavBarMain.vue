@@ -25,14 +25,14 @@
                 :class="{ hidden: !opened }"
             >
                 <li>
-                    <NuxtLink :to="{ name: 'index' }" :class="linkClass"
-                        >Главная</NuxtLink
-                    >
+                    <NuxtLink :to="{ name: 'index' }" :class="linkClass">{{
+                        $t("nav.home")
+                    }}</NuxtLink>
                 </li>
                 <li v-if="shop.web_shop_rules != null">
-                    <NuxtLink :to="{ name: 'rules' }" :class="linkClass"
-                        >Правила</NuxtLink
-                    >
+                    <NuxtLink :to="{ name: 'rules' }" :class="linkClass">{{
+                        $t("nav.rules")
+                    }}</NuxtLink>
                 </li>
                 <li v-if="shop.web_telegram_bot_link">
                     <a
